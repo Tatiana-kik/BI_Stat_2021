@@ -17,3 +17,4 @@ comb_files <- function(ext) {
 out_dataframe <- comb_files("csv")
 
 # 2. Исправьте некорректные данные:
+
