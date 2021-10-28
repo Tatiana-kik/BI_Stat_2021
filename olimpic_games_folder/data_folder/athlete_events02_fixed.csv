@@ -37,7 +37,7 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 23458,Yvette Courault,F,33,153,59,France,FRA,1984 Summer,1984,Summer,Los Angeles,Shooting,"Shooting Women's Small-Bore Rifle, Three Positions, 50 metres",NA
 23459,Flicien Jules mile Courbet,M,20,NA,NA,Belgium,BEL,1908 Summer,1908,Summer,London,Swimming,Swimming Men's 200 metres Breaststroke,NA
 23459,Flicien Jules mile Courbet,M,24,NA,NA,Belgium,BEL,1912 Summer,1912,Summer,Stockholm,Water Polo,Water Polo Men's Water Polo,Bronze
-23459,Flicien Jules mile Courbet,M,240,NA,NA,Belgium,BEL,1912 Summer,1912,Summer,Stockholm,Swimming,Swimming Men's 200 metres Breaststroke,NA
+23459,Flicien Jules mile Courbet,M,24,NA,NA,Belgium,BEL,1912 Summer,1912,Summer,Stockholm,Swimming,Swimming Men's 200 metres Breaststroke,NA
 23459,Flicien Jules mile Courbet,M,24,NA,NA,Belgium,BEL,1912 Summer,1912,Summer,Stockholm,Swimming,Swimming Men's 400 metres Breaststroke,NA
 23459,Flicien Jules mile Courbet,M,32,NA,NA,Belgium,BEL,1920 Summer,1920,Summer,Antwerpen,Swimming,Swimming Men's 200 metres Breaststroke,NA
 23459,Flicien Jules mile Courbet,M,32,NA,NA,Belgium,BEL,1920 Summer,1920,Summer,Antwerpen,Swimming,Swimming Men's 400 metres Breaststroke,NA
@@ -22556,4 +22556,4 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 34725,Pierre Ferlin,M,NA,NA,NA,Cercle Nautique de Reims-4,FRA,1900 Summer,1900,Summer,Paris,Rowing,Rowing Men's Coxed Pairs,NA
 34726,Bernadett Ferling,F,27,180,71,Hungary,HUN,2004 Summer,2004,Summer,Athina,Handball,Handball Women's Handball,NA
 34726,Bernadett Ferling,F,31,180,71,Hungary,HUN,2008 Summer,2008,Summer,Beijing,Handball,Handball Women's Handball,NA
-34727,Carlotta Ferlito,F,17,160,50,Italy,
+34727,Carlotta Ferlito,F,17,160,50,Italy,,,,,,,,

@@ -18153,9 +18153,9 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 21118,Nednapa Chommuak,F,20,164,50,Thailand,THA,1992 Summer,1992,Summer,Barcelona,Athletics,Athletics Women's 4 x 100 metres Relay,NA
 21119,Angkhan Chomphuphuang,M,27,175,75,Thailand,THA,2008 Summer,2008,Summer,Beijing,Boxing,Boxing Men's Middleweight,NA
 21120,Bumphen Chomvith,M,38,168,70,Siames-Cat,THA,1960 Summer,1960,Summer,Roma,Sailing,Sailing Mixed Two Person Keelboat,NA
-21121,Chon Chol-Ho,M,23,NA,77.3333333333333,North Korea,PRK,1992 Summer,1992,Summer,Barcelona,Weightlifting,Weightlifting Men's Light-Heavyweight,NA
-21121,Chon Chol-Ho,M,27,NA,77.3333333333333,North Korea,PRK,1996 Summer,1996,Summer,Atlanta,Weightlifting,Weightlifting Men's Middleweight,Bronze
-21121,Chon Chol-Ho,M,31,NA,77.3333333333333,North Korea,PRK,2000 Summer,2000,Summer,Sydney,Weightlifting,Weightlifting Men's Middleweight,NA
+21121,Chon Chol-Ho,M,23,NA,77.33333333,North Korea,PRK,1992 Summer,1992,Summer,Barcelona,Weightlifting,Weightlifting Men's Light-Heavyweight,NA
+21121,Chon Chol-Ho,M,27,NA,77.33333333,North Korea,PRK,1996 Summer,1996,Summer,Atlanta,Weightlifting,Weightlifting Men's Middleweight,Bronze
+21121,Chon Chol-Ho,M,31,NA,77.33333333,North Korea,PRK,2000 Summer,2000,Summer,Sydney,Weightlifting,Weightlifting Men's Middleweight,NA
 21122,Dimitrios Chondrokoukis,M,28,194,74,Cyprus,CYP,2016 Summer,2016,Summer,Rio de Janeiro,Athletics,Athletics Men's High Jump,NA
 21123,"Nyak Voon Nasar-ud-Din ""Anthony"" Chong",M,27,170,58,Malaysia,MAS,1968 Summer,1968,Summer,Mexico City,Athletics,Athletics Men's Long Jump,NA
 21124,Chong Chang-Suk,F,17,NA,NA,North Korea,PRK,1992 Winter,1992,Winter,Albertville,Speed Skating,Speed Skating Women's 500 metres,NA
@@ -22585,4 +22585,4 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 23430,Kafoumba Coulibaly,M,22,179,71,Cote d'Ivoire,CIV,2008 Summer,2008,Summer,Beijing,Football,Football Men's Football,NA
 23431,Mamadou Coulibaly,M,NA,NA,NA,Mali,MLI,1992 Summer,1992,Summer,Barcelona,Judo,Judo Men's Half-Lightweight,NA
 23432,Mohamed Coulibaly,M,18,NA,NA,Mali,MLI,2008 Summer,2008,Summer,Beijing,Swimming,Swimming Men's 50 metres Freestyle,NA
-23433,Hadj Moussa Coulibaly,M,23,NA,NA,Mali,MLI,2004 Summe
+23433,Hadj Moussa Coulibaly,M,23,NA,NA,Mali,MLI,2004 Summer,2004,Summer,,,,

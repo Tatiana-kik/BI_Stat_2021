@@ -41,7 +41,7 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 79606,Melissa Ivette Mikec (Prez Carballo-),F,24,165,59,El Salvador,ESA,2012 Summer,2012,Summer,London,Shooting,"Shooting Women's Small-Bore Rifle, Three Positions, 50 metres",NA
 79607,"John Michael Nchekwube Obinna ""John Mikel Obi"" Mikel",M,29,179,86,Nigeria,NGR,2016 Summer,2016,Summer,Rio de Janeiro,Football,Football Men's Football,Bronze
 79608,Antanas Miknas,M,32,178,69,Soviet Union,URS,1956 Summer,1956,Summer,Melbourne,Athletics,Athletics Men's 20 kilometres Walk,Silver
-79609,Pavel Mike,G,22,182,79,Czechoslovakia,TCH,1972 Summer,1972,Summer,Munich,Handball,Handball Men's Handball,Silver
+79609,Pavel Mike,M,22,182,79,Czechoslovakia,TCH,1972 Summer,1972,Summer,Munich,Handball,Handball Men's Handball,Silver
 79609,Pavel Mike,M,25,182,79,Czechoslovakia,TCH,1976 Summer,1976,Summer,Montreal,Handball,Handball Men's Handball,NA
 79610,Dimitrios Mikhail,M,NA,NA,63,Greece,GRE,1960 Summer,1960,Summer,Roma,Boxing,Boxing Men's Light-Welterweight,NA
 79611,Panagiotis Mikhail,M,33,165,73,Greece,GRE,1972 Summer,1972,Summer,Munich,Sailing,Sailing Mixed Three Person Keelboat,NA
@@ -73,7 +73,7 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 79628,Dmytro Valeriyovych Mikhay,M,22,195,96,Ukraine,UKR,2012 Summer,2012,Summer,London,Rowing,Rowing Men's Double Sculls,NA
 79628,Dmytro Valeriyovych Mikhay,M,26,195,96,Ukraine,UKR,2016 Summer,2016,Summer,Rio de Janeiro,Rowing,Rowing Men's Quadruple Sculls,NA
 79629,Aleksandr Vyacheslavovich Mikhaylin,M,32,195,115,Russia,RUS,2012 Summer,2012,Summer,London,Judo,Judo Men's Heavyweight,Silver
-79630,Anatoly Mikhaylin,G,37,NA,NA,Russia,RUS,1996 Summer,1996,Summer,Atlanta,Sailing,Sailing Mixed Two Person Keelboat,NA
+79630,Anatoly Mikhaylin,M,37,NA,NA,Russia,RUS,1996 Summer,1996,Summer,Atlanta,Sailing,Sailing Mixed Two Person Keelboat,NA
 79631,Aleksandr Mikhaylov,M,27,187,75,Russia,RUS,1998 Winter,1998,Winter,Nagano,Freestyle Skiing,Freestyle Skiing Men's Aerials,NA
 79631,Aleksandr Mikhaylov,M,31,187,75,Russia,RUS,2002 Winter,2002,Winter,Salt Lake City,Freestyle Skiing,Freestyle Skiing Men's Aerials,NA
 79632,Anani Mikhaylov,M,24,182,74,Bulgaria,BUL,1972 Summer,1972,Summer,Munich,Fencing,"Fencing Men's Sabre, Individual",NA
@@ -22780,4 +22780,4 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 91135,Henri Pantin,M,26,NA,NA,France,FRA,1900 Summer,1900,Summer,Paris,Fencing,"Fencing Men's Foil, Masters, Individual",NA
 91135,Henri Pantin,M,26,NA,NA,France,FRA,1900 Summer,1900,Summer,Paris,Fencing,"Fencing Men's epee, Masters, Individual",NA
 91136,Diomedes Panton,M,23,175,69,Philippines,PHI,1984 Summer,1984,Summer,Los Angeles,Cycling,"Cycling Men's Individual Pursuit, 4,000 metres",NA
-91137,Georgios Pantos,M,NA,NA,NA,Athens-2,GRE,1906 Summer,1906,Summer,Athina,Footba
+91137,Georgios Pantos,M,NA,NA,NA,Athens-2,GRE,1906 Summer,1906,Summer,Athina,Football,,

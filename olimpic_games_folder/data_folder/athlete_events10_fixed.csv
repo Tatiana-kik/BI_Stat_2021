@@ -20409,9 +20409,9 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 123513,Mara Isabel Urrutia Ocor,F,23,170,78,Colombia,COL,1988 Summer,1988,Summer,Seoul,Athletics,Athletics Women's Discus Throw,NA
 123513,Mara Isabel Urrutia Ocor,F,35,170,78,Colombia,COL,2000 Summer,2000,Summer,Sydney,Weightlifting,Weightlifting Women's Heavyweight,Gold
 123514,Osmani Urrutia Ramrez,M,28,178,107,Cuba,CUB,2004 Summer,2004,Summer,Athina,Baseball,Baseball Men's Baseball,Gold
-123515,"Roberto Antonio ""Tony"" Urrutia Herdez",M,18,NA,74.6666666666667,Cuba,CUB,1976 Summer,1976,Summer,Montreal,Weightlifting,Weightlifting Men's Lightweight,NA
-123515,"Roberto Antonio ""Tony"" Urrutia Herdez",M,30,NA,74.6666666666667,United States,USA,1988 Summer,1988,Summer,Seoul,Weightlifting,Weightlifting Men's Middleweight,NA
-123515,"Roberto Antonio ""Tony"" Urrutia Herdez",M,34,NA,74.6666666666667,United States,USA,1992 Summer,1992,Summer,Barcelona,Weightlifting,Weightlifting Men's Light-Heavyweight,NA
+123515,"Roberto Antonio ""Tony"" Urrutia Herdez",M,18,NA,74.66666667,Cuba,CUB,1976 Summer,1976,Summer,Montreal,Weightlifting,Weightlifting Men's Lightweight,NA
+123515,"Roberto Antonio ""Tony"" Urrutia Herdez",M,30,NA,74.66666667,United States,USA,1988 Summer,1988,Summer,Seoul,Weightlifting,Weightlifting Men's Middleweight,NA
+123515,"Roberto Antonio ""Tony"" Urrutia Herdez",M,34,NA,74.66666667,United States,USA,1992 Summer,1992,Summer,Barcelona,Weightlifting,Weightlifting Men's Light-Heavyweight,NA
 123516,Yosiry Urrutia Chaverra,F,30,176,65,Colombia,COL,2016 Summer,2016,Summer,Rio de Janeiro,Athletics,Athletics Women's Triple Jump,NA
 123517,"Christopher K. ""Chris"" Urry",M,23,188,86,New Zealand,NZL,1976 Summer,1976,Summer,Montreal,Sailing,Sailing Mixed Three Person Keelboat,NA
 123518,Wiltrud Urselmann (-Haverkamp),F,18,175,73,Germany,GER,1960 Summer,1960,Summer,Roma,Swimming,Swimming Women's 200 metres Breaststroke,Silver
@@ -22462,4 +22462,3 @@ ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
 124513,Juan Pierre van Deventer,M,25,184,70,South Africa,RSA,2008 Summer,2008,Summer,Beijing,Athletics,"Athletics Men's 1,500 metres",NA
 124514,Germaine Van Dievoet (-Dessecker),F,20,NA,NA,Belgium,BEL,1920 Summer,1920,Summer,Antwerpen,Swimming,Swimming Women's 100 metres Freestyle,NA
 124515,Raymond Van Dijck,M,25,181,73,Belgium,BEL,1960 Summer,1960,Summer,Roma,Athletics,Athletics Men's Pole Vault,NA
-124516,
