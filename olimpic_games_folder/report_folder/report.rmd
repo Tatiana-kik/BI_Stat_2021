@@ -377,3 +377,74 @@ perennial %>% select(Medal) %>% unique() %>% count() %>% .$n
 chisq.test(perennial$Team, perennial$Medal)
 ```
 **Test results:** The results of the **Pearson's Chi-squared test** allows us to deny the null hypothesis that the all ***Teams*** earn ***Medals*** with equal probability: *X-squared = 2772.7, Number of Medals = 4, Number of Teams = 358, p-value < 2.2e-16*.
+
+
+
+## **Task 16. Additional_Test different hypothesis**
+Optional task: test several hypotheses using the learned methods.
+
+**Null Hypothesis #1:** There is no difference in the results (Medals) for men with different Height in Basketball.
+
+**1.** To deny this Null hypothesis we split our data in two subsets: **clean winners** - those who doesn't have records without medals and **clean losers** - those who doesn't have at least one record with medal.
+```{r}
+withmedal_clean <- out_dataframe %>% filter(Sport == "Basketball") %>% filter(Sex =="M", !is.na(Height)) %>% select(ID, Height, Medal) %>% unique() %>% filter(!is.na(Medal)) %>% select(ID, Height) %>% unique()
+
+all <- out_dataframe %>% filter(Sport == "Basketball") %>% filter(Sex =="M", !is.na(Height)) %>% select(ID, Height, Medal) %>% unique() %>% select(ID, Height) %>% unique()
+
+
+withoutmedal_clean <- anti_join(all, withmedal_clean, by = "ID")
+```
+
+
+**2.** Then we applied the **Welch Two Sample t-test** to check our Null hypothesis:
+```{r}
+t.test(withmedal_clean$Height, withoutmedal_clean$Height)
+```
+**Test results:** When comparing the ***Height*** of men with Medals and without using the **Welch Two Sample t-test**, the null hypothesis (there is no difference in the results (Medals) for men with different Height in Basketball) was rejected *(statistic value = 7.2178, with medal sample size = 506, without medal sample size = 1402, p-value = 1.086e-12).* 
+
+
+**3.** Then we concatenated our data in one dataframe and introduced one more variable: tall - which is TRUE, when the Height of the player is bigger than average, and FALSE in case when the Height of the player is smaller than average.
+Then we counted all the combinations of the status for medal (win vs lose) and height (tall vs small) to perform the **Pearson's Chi-squared test**:
+```{r}
+joined_medals <- rbind(mutate(Medal = TRUE, withmedal_clean), mutate(Medal = FALSE, withoutmedal_clean))
+joined_medals <- joined_medals %>% mutate(tall = Height > mean(Height))
+
+
+tall_win <- joined_medals %>% filter(tall == TRUE, Medal == TRUE) %>% count() %>% .$n
+tall_lose <- joined_medals %>% filter(tall == TRUE, Medal == FALSE) %>% count() %>% .$n
+small_win <- joined_medals %>% filter(tall == FALSE, Medal == TRUE) %>% count() %>% .$n
+small_lose <- joined_medals %>% filter(tall == FALSE, Medal == FALSE) %>% count() %>% .$n
+
+numb_player <- rbind(c(tall_win, tall_lose), c(small_win, small_lose))
+colnames(numb_player) <- c("Win", "Lose")
+rownames(numb_player) <- c("Tall", "Small")
+
+chisq.test(numb_player)
+```
+**Test results:** When comparing the ***Height*** of men with Medals and without using the **Pearson's Chi-squared test**, the null hypothesis (there is no difference in the results (Medals) for men with different Height in Basketball) was rejected *(X-squared = 43.634, sample size = 1908, p-value = 3.959e-11).* 
+
+
+**4.** Here we visualized our **Pearson's Chi-squared test** results:
+```{r}
+mosaicplot(numb_player, color=T, shade=T, ylab="Medals", xlab="Height", cex.axis=1, main="")
+```
+
+
+### THE END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
