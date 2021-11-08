@@ -1,0 +1,450 @@
+---
+title: "report"
+author: "Kikalova Tatiana"
+date: "11/7/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## **Task 1. Data Load**
+As our data was separated into multiple csv files, we created `comb_files` function to combine these files into one dataframe for further data analysis.
+
+
+```{r}
+comb_files <- function() {
+  data_path <- "..\\data_folder\\"
+  file_list <- list.files(path = data_path)
+  first_file <- read.csv(file = paste0(data_path, file_list[1]), na.strings=c("NA", " ", ""))
+  result_file <- first_file 
+  
+  for (file_name in file_list) {
+    if (which(file_name == file_list) != 1) {
+      input_file <- read.csv(file = paste0(data_path, file_name), na.strings=c("NA", " ", ""))
+      result_file <- rbind(result_file, input_file) 
+    }
+  }
+  return(result_file)
+} 
+
+out_dataframe <- comb_files()
+```
+
+
+## **Task 2. Data Cleaning**
+We fixed our data manually. The alternative would be to use the `TryCatch` function, that would lead to dropping of an entire damaged files. Fixed files were renamed with “_fixed” postfix.
+
+
+## **Task 3. Age of the youngest athletes**
+Find out the age of the youngest athletes of both genders at the Olympic games in the year 1992.
+
+```{r}
+man_min <- min(out_dataframe$Age[out_dataframe$Sex == "M" & out_dataframe$Year == 1992], na.rm = T)
+woman_min <- min(out_dataframe$Age[out_dataframe$Sex == "F" & out_dataframe$Year == 1992], na.rm = T)
+print(paste0("Age of the youngest male athlete in 1992: ", man_min))
+print(paste0("Age of the youngest female athlete in 1992: ", woman_min))
+```
+
+
+## **Task 4. Mean and SD for Height**
+Calculate the mean and standard deviation of parameter ***Height*** for athletes of each gender. 
+
+```{r}
+man_mean <- mean(out_dataframe$Height[out_dataframe$Sex == "M"], na.rm = T)
+woman_mean <- mean(out_dataframe$Height[out_dataframe$Sex == "F"], na.rm = T)
+print(paste0("Mean value of the parameter Height of female athletes: ", round(woman_mean, digits = 4)))
+print(paste0("Mean value of the parameter Height of male athletes: ", round(man_mean, digits = 4)))
+
+man_sd <- sd(out_dataframe$Height[out_dataframe$Sex == "M"], na.rm = T)
+woman_sd <- sd(out_dataframe$Height[out_dataframe$Sex == "F"], na.rm = T)
+print(paste0("Standard deviation of the parameter Height of female athletes: ", round(woman_sd, digits = 4)))
+print(paste0("Standard deviation of the parameter Height of male athletes: ", round(man_sd, digits = 4)))
+```
+
+
+## **Task 5. Mean and SD for Height for female tennis players**
+Calculate the mean and standard deviation of the parameter ***Height*** for female tennis players (sex = F) at the Olympic games of the year 2000. Round your answer to the first number after the point.
+
+```{r}
+tennis_woman_mean <- mean(out_dataframe$Height[out_dataframe$Sex == "F" & out_dataframe$Sport == "Tennis" & out_dataframe$Year == 2000], na.rm = T)
+tennis_woman_mean_round <- round(tennis_woman_mean, digits = 1)
+print(paste0("Mean value of the parameter Height of tennis female athletes in 2000: ", tennis_woman_mean_round))
+
+tennis_woman_sd <- sd(out_dataframe$Height[out_dataframe$Sex == "F" & out_dataframe$Sport == "Tennis" & out_dataframe$Year == 2000], na.rm = T)
+tennis_woman_sd_round <- round(tennis_woman_sd, digits = 1)
+print(paste0("Standard deviation of the parameter Height of tennis female athletes in 2000: ", tennis_woman_sd_round))
+```
+
+
+## **Task 6. Sport of the heaviest athlete in 2006**
+What sport was the 2006 Olympic games heaviest athlete in? 
+
+```{r}
+library(dplyr)
+print(paste0("Sport of the heaviest athlete in 2006: ", filter(out_dataframe, Year == "2006") %>% slice(which.max(Weight)) %>% .$Sport))
+```
+
+
+## **Task 7. Number of female gold medals in 1980-2010**
+How many gold medals were won by women from 1980 to 2010? 
+
+```{r}
+print(paste0("Number of female gold medals in 1980-2010: ", filter(out_dataframe, 1980 <= Year & Year <= 2010) %>% filter(Sex == "F") %>% filter(Medal == "Gold")  %>% count() %>% .$n))
+```
+
+
+## **Task 8. John Aalberg and Olympic Games**
+How many times has athlete **John Aalberg** participated in the Olympic Games in different years? 
+
+```{r}
+print(paste0("Number of times John Aalberg participated in Olympic Games: ", filter(out_dataframe, Name == "John Aalberg") %>% .$Year %>% unique(incomparables = TRUE) %>% length()))
+```
+
+
+## **Task 9. Least and most represented age groups in 2008 Olympic Games**
+Identify the least and most represented (by number of participants) age groups for athletes at the 2008 Olympic Games. Possible age groups: [15-25), [25-35), [35-45), [45-55].
+
+```{r}
+data_ID <- filter(out_dataframe, Year == "2008") %>% 
+  select(ID, Age) %>%
+  filter(Age >= 15 & Age < 55) %>%
+  unique(incomparables = FALSE) %>%
+  group_by(gr=cut(Age, breaks= seq(15, 55, by = 10), right=F) ) %>% 
+  summarise(n= n()) %>%
+  arrange(as.numeric(gr))
+```
+
+The function `group_by` did not allow us to separately specify inclusiveness per group, so we had to add values to the last group manually and change the group name to reflect the task most accurately.
+
+```{r}
+data_ID2 <- data_ID
+data_ID2[data_ID2$gr == "[45,55)", 2] = data_ID2[data_ID2$gr == "[45,55)", 2] + filter(out_dataframe, Year == "2008") %>%
+  select(ID, Age) %>%
+  filter(Age == "55") %>%
+  unique(incomparables = FALSE) %>%
+  count() %>%
+  .$n
+data_ID2[, 1] <- sapply(data_ID2[, 1], as.character)
+data_ID2[data_ID2$gr == "[45,55)", 1] = "[45,55]"
+print("Number of participants by age group in 2008 Olympic Games: ")
+data_ID2
+```
+
+
+## **Task 10. Changes of the number of sport types in 1994-2002**
+How the number of sport types had change since 1994 until 2002 Olympic games? 
+
+```{r}
+print(paste0("Difference in the number of sport types in 1994-2002 Olympic Games: ", filter(out_dataframe, Year == "2002") %>% select(Sport) %>% unique(incomparables = FALSE) %>% count() %>% .$n -  filter(out_dataframe, Year == "1994") %>% select(Sport) %>% unique(incomparables = FALSE) %>% count() %>% .$n))
+```
+
+
+## **Task 11. Top 3 countries**
+Identify top 3 countries by Medal type for the winter and summer Olympic games.
+
+```{r}
+print("Top 3 Winter countries: ")
+cbind(
+out_dataframe %>% 
+  filter(Season == "Winter" & Medal == "Gold") %>% 
+  select(NOC) %>% 
+  group_by(gold = NOC) %>% 
+  summarise(n = n()) %>% 
+  slice_max(n = 3, order_by = n) %>% 
+  select(gold)
+,
+out_dataframe %>% 
+  filter(Season == "Winter" & Medal == "Silver") %>% 
+  select(NOC) %>% 
+  group_by(silver = NOC) %>% 
+  summarise(n = n()) %>% 
+  slice_max(n = 3, order_by = n) %>% 
+  select(silver)
+,
+out_dataframe %>% 
+  filter(Season == "Winter" & Medal == "Bronze") %>% 
+  select(NOC) %>% 
+  group_by(bronze = NOC) %>% 
+  summarise(n = n()) %>% 
+  slice_max(n = 3, order_by = n) %>% 
+  select(bronze)
+)  
+print("Top 3 Summer countries: ")
+cbind(
+  out_dataframe %>% 
+    filter(Season == "Summer" & Medal == "Gold") %>% 
+    select(NOC) %>% 
+    group_by(gold = NOC) %>% 
+    summarise(n = n()) %>% 
+    slice_max(n = 3, order_by = n) %>% 
+    select(gold)
+  ,
+  out_dataframe %>% 
+    filter(Season == "Summer" & Medal == "Silver") %>% 
+    select(NOC) %>% 
+    group_by(silver = NOC) %>% 
+    summarise(n = n()) %>% 
+    slice_max(n = 3, order_by = n) %>% 
+    select(silver)
+  ,
+  out_dataframe %>% 
+    filter(Season == "Summer" & Medal == "Bronze") %>% 
+    select(NOC) %>% 
+    group_by(bronze = NOC) %>% 
+    summarise(n = n()) %>% 
+    slice_max(n = 3, order_by = n) %>% 
+    select(bronze)
+)
+```
+
+
+## **Task 12. Standardizing of Height parameter**
+Create a new parameter ***Height_z_scores*** and store the values of the ***Height*** variable in it after standardizing it. 
+
+```{r}
+out_dataframe <- out_dataframe %>% mutate(Height_z_scores = scale(Height))
+head(out_dataframe %>% select(Height, Height_z_scores))
+```
+
+
+## **Task 13. Additional_min-max normalization of Height parameter**
+Create a new variable ***Height_min_max_scaled*** and store the values of the ***Height variable*** in it after applying min-max normalization to it.
+
+```{r}
+normalize_h <- function(x, na.rm = TRUE) {
+  return((x- min(x, na.rm = TRUE)) /(max(x, na.rm = TRUE)-min(x, na.rm = TRUE)))
+}
+out_dataframe <- out_dataframe %>% mutate(Height_min_max_scaled = normalize_h(Height))
+head(out_dataframe %>% select(Height, Height_min_max_scaled))
+```
+
+
+## **Task 14. Comparison of main parameters of both gender participants in Winter Olympic games**
+Compare the ***Height***, ***Weight*** and ***Age*** parameters for men and women who competed in the Winter Olympic games. Please format the results so that we can immediately use them for the article. 
+
+
+### Mean values of the ***Height***, ***Weight*** and ***Age*** parameters for men and women:
+```{r}
+library(ggplot2)
+
+hfm <- mean(out_dataframe$Height[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Mean value of the Height of female participants of Winter Olimpics: ", round(hfm, digits = 4)))
+wfm <- mean(out_dataframe$Weight[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Mean value of the Weight of female participants of Winter Olimpics: ", round(wfm, digits = 4)))
+afm <- mean(out_dataframe$Age[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Mean value of the Age of female participants of Winter Olimpics: ", round(afm, digits = 4)))
+
+hmm <- mean(out_dataframe$Height[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Mean value of the Height of male participants of Winter Olimpics: ", round(hmm, digits = 4)))
+wmm <- mean(out_dataframe$Weight[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Mean value of the Weight of male participants of Winter Olimpics: ", round(wmm, digits = 4)))
+amm <- mean(out_dataframe$Age[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Mean value of the Age of male participants of Winter Olimpics: ", round(amm, digits = 4)))
+
+hfsd <- sd(out_dataframe$Height[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Standard deviation of the Height of female participants of Winter Olimpics: ", round(hfsd, digits = 4)))
+wfsd <- sd(out_dataframe$Weight[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Standard deviation of the Weight of female participants of Winter Olimpics: ", round(wfsd, digits = 4)))
+afsd <- sd(out_dataframe$Age[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Standard deviation of the Age of female participants of Winter Olimpics: ", round(afsd, digits = 4)))
+
+hmsd <- sd(out_dataframe$Height[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Standard deviation of the Height of male participants of Winter Olimpics: ", round(hmsd, digits = 4)))
+wmsd <- sd(out_dataframe$Weight[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Standard deviation of the Weight of male participants of Winter Olimpics: ", round(wmsd, digits = 4)))
+amsd <- sd(out_dataframe$Age[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], na.rm = T)
+print(paste0("Standard deviation of the Age of male participants of Winter Olimpics: ", round(amsd, digits = 4)))
+```
+
+
+### Visual comparison of the distribution of the ***Height***, ***Weight*** and ***Age*** parameters for men and women:
+This is how parameter ***Height*** is distributed:
+```{r}
+filter(out_dataframe, Sex == "F" | Sex == "M") %>% filter(Season == "Winter") %>% ggplot(aes(x=Sex, y=Height)) +
+  geom_boxplot(outlier.colour="black")
+```
+
+
+This is how parameter ***Weight*** is distributed:
+```{r}
+filter(out_dataframe, Sex == "F" | Sex == "M") %>% filter(Season == "Winter") %>% ggplot(aes(x=Sex, y=Weight)) +
+  geom_boxplot(outlier.colour="black")
+```
+
+
+This is how parameter ***Age*** is distributed:
+```{r}
+filter(out_dataframe, Sex == "F" | Sex == "M") %>% filter(Season == "Winter") %>% ggplot(aes(x=Sex, y=Age)) +
+  geom_boxplot(outlier.colour="black")
+```
+
+
+### Comparison of the ***Height***, ***Weight*** and ***Age*** parameters for men and women:
+**1.** To compare parameter ***Height*** for men and women we selected **Welch Two Sample t-test** because the usage of this test is recommended in case of the unknown difference in dispersion of the analyzed parameters:
+```{r}
+t.test(out_dataframe$Height[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], out_dataframe$Height[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"])
+```
+
+Men statistical sample size:
+```{r}
+filter(out_dataframe, Sex == "M") %>% filter(Season == "Winter") %>% select(Height) %>% na.omit() %>% count() %>% .$n
+```
+
+Women statistical sample size:
+```{r}
+filter(out_dataframe, Sex == "F") %>% filter(Season == "Winter") %>% select(Height) %>% na.omit() %>% count() %>% .$n
+```
+**Test results:** When comparing the ***Height*** of men and women in the Winter Olympics using the **Welch Two Sample t-test**, the null hypothesis (average height of the participants in the two independent groups statistically did not differ) was rejected *(statistic value = 184.8, women sample size = 13523, men sample size = 26727, p-value <2.2e-16).* 
+
+
+
+**2.** To compare parameter ***Weight*** for men and women we selected **Welch Two Sample t-test** because the usage of this test is recommended in case of the unknown difference in dispersion of the analyzed parameters:
+```{r}
+t.test(out_dataframe$Weight[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], out_dataframe$Weight[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"])
+```
+
+Men statistical sample size:
+```{r}
+filter(out_dataframe, Sex == "M") %>% filter(Season == "Winter") %>% select(Weight) %>% na.omit() %>% count() %>% .$n
+```
+
+Women statistical sample size:
+```{r}
+filter(out_dataframe, Sex == "F") %>% filter(Season == "Winter") %>% select(Weight) %>% na.omit() %>% count() %>% .$n
+```
+**Test results:** When comparing the ***Weight*** of men and women in the Winter Olympics using the **Welch Two Sample t-test**, the null hypothesis (average weight of the participants in the two independent groups statistically did not differ) was rejected *(statistic value = 187.85, women sample size = 13334, men sample size = 26209, p-value <2.2e-16).* 
+
+
+**3.** To compare parameter ***Age*** for men and women we selected **Welch Two Sample t-test** because the usage of this test is recommended in case of the unknown difference in dispersion of the analyzed parameters:
+```{r}
+t.test(out_dataframe$Age[out_dataframe$Sex == "M" & out_dataframe$Season == "Winter"], out_dataframe$Age[out_dataframe$Sex == "F" & out_dataframe$Season == "Winter"])
+```
+
+Men statistical sample size:
+```{r}
+filter(out_dataframe, Sex == "M") %>% filter(Season == "Winter") %>% select(Age) %>% na.omit() %>% count() %>% .$n
+```
+
+Women statistical sample size:
+```{r}
+filter(out_dataframe, Sex == "F") %>% filter(Season == "Winter") %>% select(Age) %>% na.omit() %>% count() %>% .$n
+```
+**Test results:** When comparing the ***Age*** of men and women in the Winter Olympics using the **Welch Two Sample t-test**, the null hypothesis (average age of the participants in the two independent groups statistically did not differ) was rejected *(statistic value = 32.239, women sample size = 15073, men sample size = 33206, p-value <2.2e-16).* 
+
+
+
+
+
+
+
+## **Task 15. Comparison of Team and Medal parameters**
+We are especially interested in the parameters ***Team*** and ***Medal***. What can you say about them? Do we have any reason to believe that they might be related? How can we define this? 
+
+**1.** Let's have a look how our data is distributed and, specifically, for how many years teams participated in the Olympic games:
+```{r}
+out_dataframe %>% select(Team, Year) %>% unique() %>% group_by(Team) %>% summarise(n= n()) %>% ggplot(aes(x=n)) +
+  geom_histogram(binwidth = 1)
+```
+As we can see, more than 800 teams participated in the Olympics only one time each. Such data will lead to significant shift in **Pearson's Chi-squared test** results because the correlation of such statistical sample with the fact of having a medal will be unambiguous. Thus we need to adapt our data for further analysis with the **Pearson's Chi-squared test**. To compare ***Team*** and ***Medal*** variables we selected **Pearson's Chi-squared test** because it allows us to compare non-parametric variables.
+
+
+**2.** Here we subtract aforementioned (annual) Teams from the analysis:
+```{r}
+annual <- out_dataframe %>% select(Team, Year) %>% unique() %>% group_by(Team) %>% summarise(n= n()) %>% filter(n == 1)
+perennial <- anti_join(out_dataframe, annual, by = "Team")
+perennial %>% select(Team, Year) %>% unique() %>% group_by(Team) %>% summarise(n= n()) %>% ggplot(aes(x=n)) +
+  geom_histogram(binwidth = 1)
+```
+
+The dataset **perennial** contains only the ***Teams*** that participated in Olympics for more than one year.
+
+Statistical sample size (number of Teams):
+```{r}
+perennial %>% select(Team) %>% unique() %>% count() %>% .$n
+```
+
+Statistical sample size (number of Medals):
+```{r}
+perennial %>% select(Medal) %>% unique() %>% count() %>% .$n
+```
+
+
+**3.** Now we can make a non-parametric **Pearson's Chi-squared test**:
+```{r}
+chisq.test(perennial$Team, perennial$Medal)
+```
+**Test results:** The results of the **Pearson's Chi-squared test** allows us to deny the null hypothesis that the all ***Teams*** earn ***Medals*** with equal probability: *X-squared = 2772.7, Number of Medals = 4, Number of Teams = 358, p-value < 2.2e-16*.
+
+
+
+## **Task 16. Additional_Test different hypothesis**
+Optional task: test several hypotheses using the learned methods.
+
+**Null Hypothesis #1:** There is no difference in the results (Medals) for men with different Height in Basketball.
+
+**1.** To deny this Null hypothesis we split our data in two subsets: **clean winners** - those who doesn't have records without medals and **clean losers** - those who doesn't have at least one record with medal.
+```{r}
+withmedal_clean <- out_dataframe %>% filter(Sport == "Basketball") %>% filter(Sex =="M", !is.na(Height)) %>% select(ID, Height, Medal) %>% unique() %>% filter(!is.na(Medal)) %>% select(ID, Height) %>% unique()
+
+all <- out_dataframe %>% filter(Sport == "Basketball") %>% filter(Sex =="M", !is.na(Height)) %>% select(ID, Height, Medal) %>% unique() %>% select(ID, Height) %>% unique()
+
+
+withoutmedal_clean <- anti_join(all, withmedal_clean, by = "ID")
+```
+
+
+**2.** Then we applied the **Welch Two Sample t-test** to check our Null hypothesis:
+```{r}
+t.test(withmedal_clean$Height, withoutmedal_clean$Height)
+```
+**Test results:** When comparing the ***Height*** of men with Medals and without using the **Welch Two Sample t-test**, the null hypothesis (there is no difference in the results (Medals) for men with different Height in Basketball) was rejected *(statistic value = 7.2178, with medal sample size = 506, without medal sample size = 1402, p-value = 1.086e-12).* 
+
+
+**3.** Then we concatenated our data in one dataframe and introduced one more variable: tall - which is TRUE, when the Height of the player is bigger than average, and FALSE in case when the Height of the player is smaller than average.
+Then we counted all the combinations of the status for medal (win vs lose) and height (tall vs small) to perform the **Pearson's Chi-squared test**:
+```{r}
+joined_medals <- rbind(mutate(Medal = TRUE, withmedal_clean), mutate(Medal = FALSE, withoutmedal_clean))
+joined_medals <- joined_medals %>% mutate(tall = Height > mean(Height))
+
+
+tall_win <- joined_medals %>% filter(tall == TRUE, Medal == TRUE) %>% count() %>% .$n
+tall_lose <- joined_medals %>% filter(tall == TRUE, Medal == FALSE) %>% count() %>% .$n
+small_win <- joined_medals %>% filter(tall == FALSE, Medal == TRUE) %>% count() %>% .$n
+small_lose <- joined_medals %>% filter(tall == FALSE, Medal == FALSE) %>% count() %>% .$n
+
+numb_player <- rbind(c(tall_win, tall_lose), c(small_win, small_lose))
+colnames(numb_player) <- c("Win", "Lose")
+rownames(numb_player) <- c("Tall", "Small")
+
+chisq.test(numb_player)
+```
+**Test results:** When comparing the ***Height*** of men with Medals and without using the **Pearson's Chi-squared test**, the null hypothesis (there is no difference in the results (Medals) for men with different Height in Basketball) was rejected *(X-squared = 43.634, sample size = 1908, p-value = 3.959e-11).* 
+
+
+**4.** Here we visualized our **Pearson's Chi-squared test** results:
+```{r}
+mosaicplot(numb_player, color=T, shade=T, ylab="Medals", xlab="Height", cex.axis=1, main="")
+```
+
+
+### THE END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
