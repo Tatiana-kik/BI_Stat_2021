@@ -1,0 +1,278 @@
+---
+title: "Project_PCA"
+author: "Kikalova Tatiana"
+date: "12/2/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Task 1
+• Unpack the archive with the data. There will be two files: the first contains information about the elemental composition of the substances, and the second contains all sorts of physical and chemical properties.
+• Combine these files into one table (do not include the material column in it, as we will not need it further).
+• In this task, we want to learn how to predict the critical temperature of a superconductor (column critical_temp) from various characteristics of the substance and its composition (all other columns). 
+
+```{r}
+# install.packages("caret")
+library(caret)
+library(dplyr)
+```
+
+
+```{r}
+conducts1 <- read.csv(file = "train.csv", na.strings=c("NA", " ", ""))
+conducts2 <- read.csv(file = "unique_m.csv", na.strings=c("NA", " ", ""))
+conducts2 <- conducts2 %>% select(-He, -Ne, -Ar, -Kr, -Xe, -Pm, -Po, -At, -Rn) # remove "0" columns
+
+result_file <- cbind(conducts1, conducts2)
+result_file2 <- result_file[,1:(length(result_file)-2)] # remove duplicate of critical_temp and material column
+```
+
+
+
+## Task 2
+• Divide the data into training and test samples, on the first you will evaluate the coefficients, on the second you will calculate the metric. 
+
+```{r}
+result_file2$row_num <- seq.int(nrow(result_file2)) # Adding column with numbers of rows
+```
+
+
+```{r}
+#split data into training and test
+set.seed(234)
+
+training.sample <- result_file2$row_num %>% 
+  createDataPartition(p = .8, list = FALSE)
+
+train.data <- result_file2[training.sample, ]
+test.data <- result_file2[-training.sample, ]
+```
+
+
+
+## Task 3
+Standardize your data (but not the target variable). The important point is that you must calculate the mean and standard deviation of the training data, and then transform the test data with this mean and standard deviation. If it is not clear why, then imagine that you have received one test case. 
+
+```{r}
+# names of variables I don't want to scale
+varnames <- c("critical_temp", "row_num")
+
+# index vector of columns which must not be scaled
+index <- names(train.data) %in% varnames
+
+# scale only the columns not in index
+temp <- scale(train.data[, !index])
+train.data[, !index] <- temp
+
+# get the means and standard deviations from temp, to scale test too
+means <- attr(temp, "scaled:center")
+standard_deviations <- attr(temp, "scaled:scale")
+
+# scale test
+test.data[, !index] <- scale(test.data[, !index], center = means, scale = standard_deviations)
+```
+
+
+
+## Task 4
+• Build a linear model that predicts the critical temperature for all the features you have, look at the adjusted R-squared. Was the model a good one?
+```{r}
+#Build Model
+model <- lm(critical_temp ~., data = train.data)
+
+# Adjusted R-squared:  0.7599 
+summary(model)
+
+# predict using the Model
+predictions <- model %>% predict(test.data)
+
+compare <- data.frame(actual = test.data$critical_temp,
+                      predicted = predictions)
+
+error <- RMSE(predictions, test.data$critical_temp)
+error
+```
+**Results: **In our case the model doesn't look really good - as we can see the **Adjusted R-squared = 0.7599**, which is quite low.
+
+
+
+## Task 5
+• It seems that such a large number of features may prevent us from getting a better model. Let's try to apply **PCA**. Attention, here you need to act carefully, as well as with standardization, you need to get the coefficients for the main components on the training data and then use this to transform the test data. 
+
+```{r}
+#install.packages("vegan")
+library(vegan)
+```
+
+
+```{r}
+# Principal Component Analysis:
+train.data_pc <- prcomp(train.data, scale = TRUE)
+
+#compute standard deviation of each principal component
+std_dev <- train.data_pc$sdev
+
+#compute variance
+pr_var <- std_dev^2
+
+#check variance of first 10 components
+pr_var[1:10]
+
+#proportion of variance explained
+prop_varex <- pr_var/sum(pr_var)
+prop_varex[1:20]
+
+#scree plot
+plot(prop_varex, xlab = "Principal Component",
+     ylab = "Proportion of Variance Explained",
+     type = "b")
+
+#cumulative scree plot
+plot(cumsum(prop_varex), xlab = "Principal Component",
+       ylab = "Cumulative Proportion of Variance Explained",
+       type = "b")
+
+
+eigenvals(train.data_pc)
+
+#let's check broken stick plot
+bstick(train.data_pc)
+screeplot(train.data_pc, type = "lines", bstick = TRUE)
+```
+
+**Results:** as we can see from the **broken stick plot**, the first 6 PCs will be useful for a New  model
+
+
+
+## Task 6
+• Choose the optimal number of main components in your opinion and build a new model with their help. Has the model gotten better? 
+
+
+```{r}
+# Round 1:if we will take 6 main PCs and add to target variable from train.data:
+pca_scores <- scores(train.data_pc, display = "species", choices = c(1:6), scaling = 0)
+train.data_1 <- as.matrix(train.data) %*% pca_scores
+train.data_1 <- as.data.frame(train.data_1)
+train.data_comb_1 <- cbind(train.data_1, train.data$critical_temp)
+colnames(train.data_comb_1)[7] <- "critical_temp"
+
+
+model_1 <- lm(formula = critical_temp ~ ., data = train.data_comb_1)
+
+# Adjusted R-squared: 0.8102 
+summary(model_1)
+
+test.data_1 <- as.matrix(test.data) %*% pca_scores
+test.data_1 <- as.data.frame(test.data_1)
+test.data_comb_1 <- cbind(test.data_1, test.data$critical_temp)
+colnames(test.data_comb_1)[7] <- "critical_temp"
+
+# predict using the Model
+predictions_1 <- model_1 %>% predict(test.data_comb_1)
+
+compare_1 <- data.frame(actual = test.data_comb_1$critical_temp,
+                      predicted = predictions_1)
+
+error_1 <- RMSE(predictions_1, test.data_comb_1$critical_temp)
+error_1
+```
+
+
+```{r}
+# Round 2: if we will take ALL PCs and add to a target variable from train.data:
+pca_scores2 <- scores(train.data_pc, display = "species", scaling = 0)
+train.data_2 <- as.matrix(train.data) %*% pca_scores2
+train.data_2 <- as.data.frame(train.data_2)
+train.data_comb_2 <- cbind(train.data_2, train.data$critical_temp)
+colnames(train.data_comb_2)[161] <- "critical_temp"
+
+
+model2 <- lm(critical_temp ~ ., data = train.data_comb_2)
+
+# Adjusted R-squared: 1 
+summary(model2)
+
+
+test.data_2 <- as.matrix(test.data) %*% pca_scores2
+test.data_2 <- as.data.frame(test.data_2)
+test.data_comb_2 <- cbind(test.data_2, test.data$critical_temp)
+colnames(test.data_comb_2)[161] <- "critical_temp"
+
+# predict using the Model
+predictions_2 <- model2 %>% predict(test.data_comb_2)
+
+compare_2 <- data.frame(actual = test.data_comb_2$critical_temp,
+                      predicted = predictions_2)
+
+error_2 <- RMSE(predictions_2, test.data_comb_2$critical_temp)
+error_2
+```
+**Results:** As we can see using 6 main PCs or all PCs, we improved the Adjusted R-squared and decreased the Error. Our model looks much better!
+
+
+
+## Task 7
+• Let's try to apply **kernel PCA** data. Use kernel = "rbf". Attention, such a PCA will work for a long time, so allocate at least 1-2 hours for this stage. We will use already transformed data for our New model. 
+
+```{r}
+# load reticulate and use it to load numpy
+
+#install.packages("reticulate")
+library(reticulate)
+np <- import("numpy")
+
+# data reading
+data_kernel <- np$load("X_transform_kPCA.npy")
+```
+
+
+
+## Task 8
+• Build the model on data that was transformed with the kernel PCA. Is it much better? (Spoiler alert: should get much better:)
+
+```{r}
+data_kernel <- as.data.frame(data_kernel)
+data_kernel$row_num <- seq.int(nrow(data_kernel)) # Adding column with numbers of rows
+```
+
+```{r}
+#split kernel data into training and test
+set.seed(234)
+
+training.sample_ker <- data_kernel$row_num %>% 
+  createDataPartition(p = .8, list = FALSE)
+
+train.data_ker <- data_kernel[training.sample_ker, ]
+test.data_ker <- data_kernel[-training.sample_ker, ]
+```
+
+
+```{r}
+# if we will take 100 main PCs from kernel PCA data and add all parameters from train.data
+train.data_ker_comb <- cbind(train.data_ker[, 1:5000], train.data$critical_temp)
+colnames(train.data_ker_comb)[5001] <- "critical_temp"
+
+model_ker <- lm(formula = critical_temp ~ ., data = train.data_ker_comb)
+
+# Adjusted R-squared:  0.6497
+summary(model_ker)
+```
+
+
+```{r}
+# predict using the New model
+test.data_ker_comb <- cbind(test.data_ker[,1:5000], test.data$critical_temp)
+colnames(test.data_ker_comb)[5001] <- "critical_temp"
+
+predictions_new <- model_ker %>% predict(test.data_ker_comb)
+
+compare_new <- data.frame(actual = test.data_ker_comb$critical_temp,
+                      predicted = predictions_new)
+
+error_new <- RMSE(predictions_new, test.data_ker_comb$critical_temp)
+error_new
+```
+**Results: ** As we can see, applying **PCA kernel** can improve the model when using sufficient number of PCs.
